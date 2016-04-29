@@ -113,16 +113,9 @@ double postfixEvaluation(string postfix)
         
         else if(postfix[i] == ' ')
         {
-            if(strTemp.length() > 1)
+            if(strTemp.length() >= 1)
             {
-                n = stod(strTemp); //String to float conversion.
-                output.push(n);
-                strTemp = "";       //Reset string.
-            }
-            
-            else if(strTemp.length() == 1)
-            {
-                n = atof(&strTemp[0]);
+                n = stod(strTemp); //String to double conversion.
                 output.push(n);
                 strTemp = "";       //Reset string.
             }
@@ -171,6 +164,7 @@ int main() {
     
     //User input prompt.
     cout<<"Please enter your mathematical expression in algebraic form."<<"\n\n"<<">>     ";
+    
     getline(cin,infix);
     
     string postfix = InfixToPostfix(infix);
@@ -182,4 +176,5 @@ int main() {
     cout<<"\n - Calculated by the stack-based calculator developed by Hesham Saleh.";
     
     return 0; //Done.
+    
 }
