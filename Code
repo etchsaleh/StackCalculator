@@ -1,0 +1,101 @@
+//
+//  main.cpp
+//  Stack Calculator
+//
+//  Created by Hesham Saleh on 4/25/16.
+//  Copyright (c) 2016 Hesham Saleh. All rights reserved.
+
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include "etchStack.h"
+
+//Check for an operator sign.
+bool isOperator(char sym)
+{
+    if(sym == '+' || sym == '-' || sym == '*' || sym == '/')
+        return true;
+    
+    return false;
+}
+
+//Distinguish between operator precedence.
+int priority(char sym)
+{
+    int score = 0;
+    
+    if(sym == '+' || sym == '-')
+        score = 1;
+    else if(sym == '/' || sym == '*')
+        score = 2;
+    
+    return score;
+}
+
+
+string InfixToPostfix(string infix)
+{
+    string postfix = ""; //Empty string.
+    myStack opStack;
+    int opEmpty = 0;
+    
+    for(int i = 0; i<infix.length(); i++)
+    {
+        if(infix[i] == ' ') postfix+=' '; //SPACE - Open to change this.
+        
+        else if(isdigit(infix[i]))
+        {
+            postfix+=infix[i];
+        }
+        
+        else if(isOperator(infix[i]))
+                {
+                    if(priority(infix[i]) > priority(opStack.top()))
+                        opStack.push(infix[i]);
+                    else
+                    {
+                        while(!opEmpty && priority(opStack.top()) >= priority(infix[i]))
+                            postfix+=opStack.pop(&opEmpty); //Keep popping stack until the top's priority is < incoming op.
+                        
+                        opStack.push(infix[i]);//Push incoming operator on stack.
+                    }
+                }
+        else if(infix[i] == '(')
+        {
+            if(infix[i+1] == '-')
+            {
+                opStack.push(infix[i]);
+                postfix+='0';
+            }
+            else opStack.push(infix[i]);
+        }
+        
+        else if(infix[i] == ')')
+        {
+            while(opStack.top() != '(')
+                postfix+=opStack.pop(&opEmpty);
+            
+            opStack.pop(&opEmpty);
+        }
+    }
+    
+    while(!opEmpty)
+        postfix+=opStack.pop(&opEmpty);
+        
+    return postfix;
+}
+
+int main() {
+    
+    string infix;
+    
+    //User input prompt.
+    cout<<"Please enter your mathematical expression in algebraic form. [Infix Notation]"<<"\n\n"<<">>     ";
+    getline(cin,infix);
+    
+    string postfix = InfixToPostfix(infix);
+    
+    cout<<"Output = "<<postfix<<"\n";
+    
+    return 0;
+}
