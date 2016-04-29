@@ -117,7 +117,7 @@ double postfixEvaluation(string postfix)
             {
                 n = stod(strTemp); //String to double conversion.
                 output.push(n);
-                strTemp = "";       //Reset string.
+                strTemp = "";      //Reset string.
             }
             
         }//End else if.
@@ -176,5 +176,4 @@ int main() {
     cout<<"\n - Calculated by the stack-based calculator developed by Hesham Saleh.";
     
     return 0; //Done.
-    
 }
