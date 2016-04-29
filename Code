@@ -177,12 +177,12 @@ int main() {
         getline(cin,infix); //Get input stream.
         
         string postfix = InfixToPostfix(infix);
-        
         if(infix == "q") break;
-        cout<<"\nans = "<<postfixEvaluation(postfix)<<endl;
+        
+        cout<<"\n<<    "<<postfixEvaluation(postfix)<<endl;
     }
     
-    cout<<"\nUser quit.";
+    cout<<"\n<<    User quit.";
     
     return 0; //Done.
     
