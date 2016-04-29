@@ -5,7 +5,7 @@
 //  Copyright (c) 2016 Hesham Saleh. All rights reserved.
 
 #include <iostream>
-#include <cstdlib>
+#include <cstdlib>     //stod() function to convert string into double.
 #include <string>
 #include "etchStack.h" //My own stack that I implemented. functions: push(), pop() and top().
 
@@ -157,22 +157,32 @@ double postfixEvaluation(string postfix)
     return answer;
 }
 
+void greeting()
+{
+    cout<<"Welcome to the stack-based calculator developed by Hesham Saleh."<<endl;
+    cout<<"________________________________________________________________"<<endl;
+    cout<<"\nPlease enter your mathematical expression in algebraic form. (q) to quit.\n";
+}
+
 int main() {
     
-    string infix;
+    string infix="";
     
     //User input prompt.
-    cout<<"Please enter your mathematical expression in algebraic form."<<"\n\n"<<">>     ";
+    greeting();
     
-    getline(cin,infix);
+    while(infix!="q")
+    {
+        cout<<"\n>>    ";
+        getline(cin,infix); //Get input stream.
+        
+        string postfix = InfixToPostfix(infix);
+        if(infix == "q") break;
+        cout<<"\nPostfix: "<<postfix;
+        cout<<"\nans = "<<postfixEvaluation(postfix)<<endl;
+    }
     
-    string postfix = InfixToPostfix(infix);
-    
-    cout<<"\nPostfix conversion: "<<postfix<<"\n";
-    
-    cout<<"_____________________________________________________________________\n\nAnswer = "<<postfixEvaluation(postfix)<<endl;
-    
-    cout<<"\n - Calculated by the stack-based calculator developed by Hesham Saleh.";
+    cout<<"\nUser quit.";
     
     return 0; //Done.
     
