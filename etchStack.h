@@ -10,32 +10,34 @@
 
 using namespace std;
 
+template<class T>
 struct node {
-    char data;
-    node *nxt;
+    T data;
+    node<T> *nxt;
 };
 
+template<class T>
 struct myStack {
-    node *head;
+    node<T> *head;
     myStack() {
         head = NULL;
     }
-    void push(char x) {
-        node *n = new node();
+    void push(T x) {
+        node<T> *n = new node<T>();
         n->data = x;
         n->nxt = head;
         head = n;
     }
     
-    char pop(int *empty) {
+    T pop(int *empty) {
         if (head == NULL) {
             *empty = 1;
             return 0;
         }
         *empty = 0;
-        node *tmp = head;
+        node<T> *tmp = head;
         head = head->nxt;
-        char x = tmp->data;
+        T x = tmp->data;
         delete (tmp);
         return x;
     }
