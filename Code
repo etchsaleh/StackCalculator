@@ -6,9 +6,9 @@
 //  Copyright (c) 2016 Hesham Saleh. All rights reserved.
 
 #include <iostream>
-#include <algorithm>
+#include <cstdlib>
 #include <string>
-#include "etchStack.h"
+#include "etchStack.h" //My own stack that I implemented. functions: push(), pop() and top().
 
 //Check for an operator sign.
 bool isOperator(char sym)
@@ -32,30 +32,35 @@ int priority(char sym)
     return score;
 }
 
-
+//Conversion between postfix and infix.
 string InfixToPostfix(string infix)
 {
     string postfix = ""; //Empty string.
-    myStack opStack;
+    myStack<char> opStack;
     int opEmpty = 0;
     
-    for(int i = 0; i<infix.length(); i++)
+    for (int i = 0; i<infix.length(); i++)
     {
-        if(infix[i] == ' ') postfix+=' '; //SPACE - Open to change this.
+        if(infix[i] == ' '); //If space, ignore.
         
-        else if(isdigit(infix[i]))
+        else if(isdigit(infix[i]) || infix[i] == '.')
         {
             postfix+=infix[i];
         }
         
         else if(isOperator(infix[i]))
                 {
+                    postfix+=' '; // SPACE
+                    
                     if(priority(infix[i]) > priority(opStack.top()))
                         opStack.push(infix[i]);
                     else
                     {
                         while(!opEmpty && priority(opStack.top()) >= priority(infix[i]))
+                        {
                             postfix+=opStack.pop(&opEmpty); //Keep popping stack until the top's priority is < incoming op.
+                            postfix+=' '; // SPACE
+                        }
                         
                         opStack.push(infix[i]);//Push incoming operator on stack.
                     }
@@ -73,16 +78,91 @@ string InfixToPostfix(string infix)
         else if(infix[i] == ')')
         {
             while(opStack.top() != '(')
+            {
+                postfix+=' '; // SPACE
                 postfix+=opStack.pop(&opEmpty);
+            }
             
             opStack.pop(&opEmpty);
         }
     }
     
     while(!opEmpty)
+    {
+        postfix+=' '; // SPACE
         postfix+=opStack.pop(&opEmpty);
+    }
+    
+    return postfix; //Complete postfix expression.
+}
+
+//Evaluation of the postfix expression and returning the final result.
+double postfixEvaluation(string postfix)
+{
+    myStack<double> output;
+    int empty = 0;
+    double answer, n = 0.0;
+    string strTemp = "";
+    
+    for (int i = 0; i<postfix.length(); i++)
+    {
+        if(isdigit(postfix[i]) || postfix[i] == '.')
+        {
+            strTemp+=postfix[i];
+        }
         
-    return postfix;
+        else if(postfix[i] == ' ')
+        {
+            if(strTemp.length() > 1)
+            {
+                n = stod(strTemp); //String to float conversion.
+                output.push(n);
+                strTemp = "";       //Reset string.
+            }
+            
+            else if(strTemp.length() == 1)
+            {
+                n = atof(&strTemp[0]);
+                output.push(n);
+                strTemp = "";       //Reset string.
+            }
+            
+        }//End else if.
+        
+        else if(isOperator(postfix[i]))
+        {
+            double n1, n2, ans;
+            
+            n2 = output.pop(&empty); //First operand.
+            
+            n1 = output.pop(&empty); //Second operand.
+            
+            switch (postfix[i]) {
+                case '+':
+                    ans = (n1 + n2); break;
+                    
+                case '-':
+                    ans = (n1 - n2); break;
+                    
+                case '*':
+                    ans = (n1 * n2); break;
+                
+                case '/':
+                    ans = (n1 / n2); break;
+                    
+                default:
+                    break;
+            }
+            
+            output.push(ans); //Push back calculation into stack.
+            
+        }//End else if.
+        
+    }//End for loop.
+    
+    answer = output.pop(&empty); //Final Answer.
+    
+    return answer;
 }
 
 int main() {
@@ -90,12 +170,16 @@ int main() {
     string infix;
     
     //User input prompt.
-    cout<<"Please enter your mathematical expression in algebraic form. [Infix Notation]"<<"\n\n"<<">>     ";
+    cout<<"Please enter your mathematical expression in algebraic form."<<"\n\n"<<">>     ";
     getline(cin,infix);
     
     string postfix = InfixToPostfix(infix);
     
-    cout<<"Output = "<<postfix<<"\n";
+    cout<<"\nPostfix conversion: "<<postfix<<"\n";
     
-    return 0;
+    cout<<"_____________________________________________________________________\n\nAnswer = "<<postfixEvaluation(postfix)<<endl;
+    
+    cout<<"\n - Calculated by the stack-based calculator developed by Hesham Saleh.";
+    
+    return 0; //Done.
 }
